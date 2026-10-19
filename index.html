@@ -3,23 +3,214 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ứng dụng cuatui</title>
-  <link rel="stylesheet" href="/style.css">
+  <title>cuatui · Ứng dụng cho người Việt</title>
+  <meta name="description" content="Nhớ Nguồn và Ôn thi A1: ứng dụng nhỏ, làm kỹ, cho người Việt. Không cần tài khoản, dữ liệu nằm trên máy bạn.">
+  <link rel="icon" href="/img/nho-nguon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --surface: #ffffff;
+      --fg: #1c1a17;
+      --muted: #6d675d;
+      --line: #e6e0d5;
+      --nn: #7d1d18;
+      --nn-soft: #f6e9e2;
+      --nn-gold: #d9a441;
+      --a1: #208aef;
+      --a1-soft: #e6f2fe;
+      --shadow: 0 1px 2px rgba(40, 30, 20, .06), 0 12px 32px -12px rgba(40, 30, 20, .18);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141311;
+        --surface: #1e1c19;
+        --fg: #efebe4;
+        --muted: #a69f94;
+        --line: #33302b;
+        --nn: #e3897d;
+        --nn-soft: #2c1d1a;
+        --a1: #6cb4ff;
+        --a1-soft: #16222f;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 12px 32px -12px rgba(0, 0, 0, .6);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 16px/1.6 "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    a { color: inherit; }
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+
+    header { padding: 28px 0 0; }
+    .brand { font-weight: 800; font-size: 1.15rem; letter-spacing: -.02em; text-decoration: none; }
+    .brand span { color: var(--nn-gold); }
+
+    .hero { padding: 64px 0 48px; max-width: 680px; }
+    .hero h1 {
+      font-size: clamp(2rem, 5.5vw, 3.2rem);
+      line-height: 1.12;
+      letter-spacing: -.03em;
+      margin: 0 0 18px;
+      font-weight: 800;
+    }
+    .hero h1 em { font-style: normal; color: var(--nn); }
+    .hero p { font-size: 1.1rem; color: var(--muted); margin: 0; max-width: 560px; }
+
+    .apps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 24px; }
+    .app {
+      --c: var(--nn);
+      --soft: var(--nn-soft);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .app.a1 { --c: var(--a1); --soft: var(--a1-soft); }
+    .app-top {
+      background: var(--soft);
+      padding: 28px 28px 24px;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+    .app-top img {
+      width: 84px; height: 84px;
+      border-radius: 22px;
+      box-shadow: 0 8px 20px -8px rgba(0, 0, 0, .35);
+      flex: none;
+    }
+    .app h2 { margin: 0; font-size: 1.5rem; letter-spacing: -.02em; line-height: 1.2; }
+    .app .tag { margin: 4px 0 0; color: var(--muted); font-size: .95rem; }
+    .app-body { padding: 22px 28px 28px; display: flex; flex-direction: column; gap: 18px; flex: 1; }
+    .app ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    .app li { display: flex; gap: 10px; align-items: flex-start; }
+    .app li::before {
+      content: "";
+      flex: none;
+      width: 20px; height: 20px; margin-top: 2px;
+      border-radius: 50%;
+      background: var(--c) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 10.5l2.5 2.5L14 7.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/20px no-repeat;
+    }
+    .app-foot {
+      margin-top: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: .85rem; font-weight: 600;
+      padding: 6px 12px; border-radius: 999px;
+      background: var(--soft); color: var(--c);
+    }
+    .pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    .app-foot a { font-size: .9rem; color: var(--muted); }
+    .app-foot a:hover { color: var(--c); }
+
+    .promise {
+      margin: 64px 0 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: 24px;
+    }
+    .promise div { border-top: 2px solid var(--fg); padding-top: 14px; }
+    .promise strong { display: block; font-size: 1.05rem; margin-bottom: 4px; }
+    .promise span { color: var(--muted); font-size: .95rem; }
+
+    footer {
+      margin-top: 72px;
+      padding: 28px 0 40px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .9rem;
+      display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between;
+    }
+    @media (max-width: 480px) {
+      .hero { padding: 40px 0 32px; }
+      .app-top, .app-body { padding-left: 20px; padding-right: 20px; }
+      .app-top img { width: 68px; height: 68px; border-radius: 18px; }
+    }
+  </style>
 </head>
 <body>
-<main>
-  <h1>Ứng dụng</h1>
-  <p class="meta">Liên hệ: <a href="mailto:pxng68@gmail.com">pxng68@gmail.com</a></p>
-  <ul class="apps">
-    <li>
-      <strong>Nhớ Nguồn</strong>: nhắc ngày giỗ theo âm lịch, văn khấn, mâm cúng.<br>
-      <a href="/nho-nguon/quyen-rieng-tu/">Chính sách quyền riêng tư</a>
-    </li>
-    <li>
-      <strong>Ôn thi A1</strong>: ôn thi lý thuyết bằng lái xe máy hạng A1.<br>
-      <a href="/on-thi-a1/quyen-rieng-tu/">Chính sách quyền riêng tư</a>
-    </li>
-  </ul>
-</main>
+<div class="wrap">
+  <header><a class="brand" href="/">cua<span>tui</span></a></header>
+
+  <section class="hero">
+    <h1>Ứng dụng nhỏ, làm kỹ,<br>cho <em>người Việt</em>.</h1>
+    <p>Mỗi ứng dụng giải quyết gọn một việc trong đời sống. Không cần tài khoản, dữ liệu nằm trên máy của bạn.</p>
+  </section>
+
+  <section class="apps">
+    <article class="app">
+      <div class="app-top">
+        <img src="/img/nho-nguon.png" alt="Biểu tượng Nhớ Nguồn" width="84" height="84">
+        <div>
+          <h2>Nhớ Nguồn</h2>
+          <p class="tag">Nhắc ngày giỗ theo âm lịch</p>
+        </div>
+      </div>
+      <div class="app-body">
+        <ul>
+          <li>Tự đổi ngày âm, tính giỗ đầu, giỗ hết, tháng nhuận</li>
+          <li>Nhắc trước nhiều mốc, cả rằm, mùng một và ngày lễ</li>
+          <li>Văn khấn tự điền tên, chữ to, đọc thành tiếng khi cúng</li>
+          <li>Mâm cúng theo phong tục Bắc, Trung, Nam</li>
+        </ul>
+        <div class="app-foot">
+          <span class="pill">Sắp có trên Google Play</span>
+          <a href="/nho-nguon/quyen-rieng-tu/">Chính sách quyền riêng tư</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="app a1">
+      <div class="app-top">
+        <img src="/img/on-thi-a1.png" alt="Biểu tượng Ôn thi A1" width="84" height="84">
+        <div>
+          <h2>Ôn thi A1</h2>
+          <p class="tag">Ôn lý thuyết bằng lái xe máy</p>
+        </div>
+      </div>
+      <div class="app-body">
+        <ul>
+          <li>Bộ câu hỏi mới nhất theo luật 2024</li>
+          <li>Luyện theo chủ đề, thi thử như thật, chấm điểm ngay</li>
+          <li>Mẹo nhớ nhanh, luôn miễn phí</li>
+          <li>Học được khi không có mạng</li>
+        </ul>
+        <div class="app-foot">
+          <span class="pill">Sắp có trên Google Play</span>
+          <a href="/on-thi-a1/quyen-rieng-tu/">Chính sách quyền riêng tư</a>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="promise">
+    <div><strong>Không cần tài khoản</strong><span>Mở ra là dùng, không đăng ký, không đăng nhập.</span></div>
+    <div><strong>Dữ liệu ở trên máy bạn</strong><span>Chúng tôi không có máy chủ lưu thông tin của bạn.</span></div>
+    <div><strong>Quảng cáo có chừng mực</strong><span>Không chen vào lúc đang học, không bao giờ có khi đang đọc văn khấn.</span></div>
+  </section>
+
+  <footer>
+    <span>© 2026 cuatui</span>
+    <span>Liên hệ: <a href="mailto:pxng68@gmail.com">pxng68@gmail.com</a></span>
+  </footer>
+</div>
 </body>
 </html>
